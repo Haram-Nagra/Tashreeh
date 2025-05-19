@@ -6,6 +6,7 @@ import {
   RiLightbulbFlashLine,
   RiTimeLine,
 } from "react-icons/ri";
+import introImage from "../assets/use-case-education-1.png";
 
 const Intro = () => {
   const features = [
@@ -128,7 +129,7 @@ const Intro = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-tr from-[#2A2A72] to-[#009FFD] opacity-10 rounded-2xl transform rotate-6 scale-95" />
               <img
-                src="src/assets/use-case-education-1.png"
+                src={introImage}
                 alt="Educational Hero"
                 className="w-full max-w-md mx-auto rounded-2xl shadow-2xl bg-white/80 backdrop-blur-sm 
                   transform hover:rotate-0 transition-transform duration-500 rotate-3"

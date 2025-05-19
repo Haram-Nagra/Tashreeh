@@ -8,6 +8,7 @@ import {
   RiStarLine,
   RiTeamLine,
 } from "react-icons/ri";
+import heroImage from "../assets/use-case-education-1.png";
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -183,10 +184,10 @@ function Hero() {
 
               {/* Add the image here */}
               <img
-                src="src/assets/use-case-education-1.png" // Replace with your image URL
+                src={heroImage}
                 alt="Descriptive Alt Text"
                 className="absolute inset-0 w-full h-full object-contain opacity-80"
-                style={{ zIndex: 1 }} // Ensure the image is behind the decorative elements
+                style={{ zIndex: 1 }}
               />
             </motion.div>
           </motion.div>
