@@ -1,0 +1,77 @@
+require('dotenv').config();
+const axios = require('axios');
+const fs = require('fs');
+
+const apiKey = process.env.ASSEMBLY_AI_API_KEY;
+
+// Upload audio using dynamic import for node-fetch
+const uploadAudio = async (audioPath) => {
+  try {
+    const fetch = (await import('node-fetch')).default; // Dynamically import node-fetch
+    const data = fs.readFileSync(audioPath);
+    const response = await fetch('https://api.assemblyai.com/v2/upload', {
+      headers: {
+        authorization: apiKey,
+        'Transfer-Encoding': 'chunked',
+      },
+      body: data,
+      method: 'POST',
+    });
+
+    const result = await response.json();
+    return result.upload_url;
+  } catch (error) {
+    console.error(`Upload Error: ${error}`);
+    throw new Error('Audio upload failed');
+  }
+};
+
+(async () => {
+  try {
+    const audioFilePath = 'C:/Users/haram/.vscode/tashreeh/frontend/src/assets/WakingUpEarly_Discipline.mp3';
+    const audioUrl = await uploadAudio(audioFilePath);
+    console.log('Uploaded Audio URL:', audioUrl);
+
+    const response = await axios.post(
+      'https://api.assemblyai.com/v2/transcript',
+      {
+        audio_url: audioUrl,
+        summarization: true,
+        summary_model: 'informative',
+        summary_type: 'bullets',
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      }
+    );
+
+    const transcriptId = response.data.id;
+    let transcript;
+
+    while (true) {
+      const transcriptResponse = await axios.get(
+        `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+        }
+      );
+
+      transcript = transcriptResponse.data;
+      if (transcript.status === 'completed') {
+        break;
+      } else if (transcript.status === 'failed') {
+        throw new Error('Transcription failed.');
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+    }
+
+    console.log('Summary:', transcript.summary);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+})();

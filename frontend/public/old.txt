@@ -1,0 +1,153 @@
+const axios = require('axios');
+require('dotenv').config(); // Ensure you're loading your API key securely from .env
+
+const apiKey = process.env.ASSEMBLY_AI_API_KEY; // API Key from .env
+const audioUrl = "C:/Users/haram/.vscode/tashreeh/frontend/src/assets/WakingUpEarly_Discipline.mp3"; // This can be a local file URL or a remote URL
+
+// Helper function to upload audio if it's a local file
+const uploadAudio = async (filePath) => {
+  // Code for uploading the file (if you need to handle local files)
+  // You can skip this if you're always using URLs
+  // Example (you may need a library like 'fs' to handle local files):
+  // const response = await axios.post('https://api.assemblyai.com/v2/upload', fileData, {...})
+  return filePath; // Return the URL or path as it is if it's already a URL
+};
+
+(async () => {
+  try {
+    let audio = audioUrl;
+    
+    // If it's a local file, you can use the uploadAudio function to get a URL
+    // Example: audio = await uploadAudio(localFilePath);
+    
+    // Send transcription request
+    const response = await axios.post(
+      'https://api.assemblyai.com/v2/transcript',
+      {
+        audio_url: audio,
+        summarization: true,
+        summary_model: 'informative',
+        summary_type: 'bullets',
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      }
+    );
+
+    // Poll for transcription completion
+    const transcriptId = response.data.id;
+    let transcript;
+
+    while (true) {
+      const transcriptResponse = await axios.get(
+        `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+        }
+      );
+
+      transcript = transcriptResponse.data;
+      if (transcript.status === 'completed') {
+        break;
+      } else if (transcript.status === 'failed') {
+        throw new Error('Transcription failed.');
+      }
+
+      // Wait before polling again (3 seconds delay)
+      await new Promise(resolve => setTimeout(resolve, 3000));
+    }
+
+    // Print summary once the transcription is completed
+    console.log('Summary:', transcript.summary);
+
+  } catch (error) {
+    console.error('Error:', error);
+  }
+})();
+
+
+latest 
+
+const axios = require('axios');
+require('dotenv').config(); // Ensure you're loading your API key securely from .env
+
+const apiKey = process.env.ASSEMBLY_AI_API_KEY; // API Key from .env
+const audioUrl = "https://drive.google.com/file/d/1uOSwaelnpoWhBSE1pn-Lsh9VzlVSRLdP/view?usp=drive_link"; // URL of the audio file
+
+// Helper function to upload audio if it's a local file
+const uploadAudio = async (filePath) => {
+  console.log(`[LOG] Attempting to upload local file: ${filePath}`);
+  // Code for uploading the file (if you need to handle local files)
+  // For example, using axios to upload to AssemblyAI upload endpoint:
+  // const response = await axios.post('https://api.assemblyai.com/v2/upload', fileData, {...})
+  return filePath; // Return the URL or path as it is if it's already a URL
+};
+
+(async () => {
+  try {
+    console.log('[LOG] Starting transcription process...');
+
+    let audio = audioUrl;
+    console.log(`[LOG] Using audio URL: ${audio}`);
+
+    // Send transcription request
+    console.log('[LOG] Sending transcription request to AssemblyAI...');
+    const response = await axios.post(
+      'https://api.assemblyai.com/v2/transcript',
+      {
+        audio_url: audio,
+        summarization: true,
+        summary_model: 'informative',
+        summary_type: 'bullets',
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      }
+    );
+
+    const transcriptId = response.data.id;
+    console.log(`[LOG] Transcription request sent. Transcript ID: ${transcriptId}`);
+
+    // Poll for transcription completion
+    console.log('[LOG] Polling for transcription status...');
+    let transcript;
+
+    while (true) {
+      const transcriptResponse = await axios.get(
+        `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+        }
+      );
+
+      transcript = transcriptResponse.data;
+      console.log(`[LOG] Current transcription status: ${transcript.status}`);
+
+      if (transcript.status === 'completed') {
+        console.log('[LOG] Transcription completed successfully.');
+        break;
+      } else if (transcript.status === 'failed') {
+        throw new Error('[ERROR] Transcription failed.');
+      }
+
+      // Wait before polling again (3 seconds delay)
+      console.log('[LOG] Waiting 3 seconds before polling again...');
+      await new Promise(resolve => setTimeout(resolve, 3000));
+    }
+
+    // Print summary once the transcription is completed
+    console.log('[LOG] Summary of transcription:');
+    console.log(transcript.summary);
+
+  } catch (error) {
+    console.error('[ERROR]', error);
+  }
+})();
