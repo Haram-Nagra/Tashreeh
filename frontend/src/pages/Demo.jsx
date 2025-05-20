@@ -50,11 +50,11 @@ const AudioUpload = () => {
       {/* Header Section */}
       <div className="max-w-4xl mx-auto mt-8 mb-10 animate-fadeIn">
         <h3 className="text-3xl font-bold text-gray-800 mb-3 tracking-tight">
-          Audio Upload & Summarization
+          Audio Upload & Transcription
           <span className="inline-block w-2 h-2 bg-blue-500 rounded-full ml-2 animate-pulse"></span>
         </h3>
         <p className="text-gray-600 text-lg font-light leading-relaxed">
-          Upload your audio file and let AI transcribe and summarize it for you.
+          Upload your audio file and let AI transcribe it for you as the summarization is paid.
         </p>
       </div>
 

@@ -11,6 +11,7 @@ import {
 } from "react-icons/hi";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import API_ENDPOINTS from "../config/api";
 import useAuthStore from "../store/authStore";
 
 function Dashboard() {
@@ -42,7 +43,7 @@ function Dashboard() {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/files/folders/${user.id}`,
+        `${API_ENDPOINTS.FILES.FOLDERS}/${user.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -97,7 +98,7 @@ function Dashboard() {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/api/files/folder", {
+      const response = await fetch(API_ENDPOINTS.FILES.FOLDER, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -178,7 +179,7 @@ function Dashboard() {
       formData.append("userId", user._id || user.id);
 
       console.log("Sending upload request to server...");
-      const response = await fetch("http://localhost:5000/api/files/upload", {
+      const response = await fetch(API_ENDPOINTS.FILES.UPLOAD, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -220,7 +221,7 @@ function Dashboard() {
       toast.success("File uploaded successfully!");
       console.log("File uploaded to server:", result.file);
     } catch (error) {
-      console.error("Network error while uploading file:", error);
+      console.error("Network error while creating file:", error);
       toast.error("Failed to upload file. Please try again.");
     }
   };
@@ -235,7 +236,7 @@ function Dashboard() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/files/file/view/${fileId}`,
+        `${API_ENDPOINTS.FILES.FILE}/view/${fileId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -275,13 +276,10 @@ function Dashboard() {
   const handleDeleteFolder = async (folderId) => {
     const token = localStorage.getItem("token");
     if (!window.confirm("Are you sure you want to delete this folder?")) return;
-    const res = await fetch(
-      `http://localhost:5000/api/files/folder/${folderId}`,
-      {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    const res = await fetch(`${API_ENDPOINTS.FILES.FOLDER}/${folderId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
     if (res.ok) {
       setFolders(folders.filter((f) => (f._id || f.id) !== folderId));
       toast.success("Folder deleted!");
@@ -293,7 +291,7 @@ function Dashboard() {
   const handleDeleteFile = async (fileId, folderId) => {
     const token = localStorage.getItem("token");
     if (!window.confirm("Are you sure you want to delete this file?")) return;
-    const res = await fetch(`http://localhost:5000/api/files/file/${fileId}`, {
+    const res = await fetch(`${API_ENDPOINTS.FILES.FILE}/${fileId}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });

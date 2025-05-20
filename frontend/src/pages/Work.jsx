@@ -7,6 +7,7 @@ import { MdClear, MdSave } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 import WaveSurfer from "wavesurfer.js";
+import API_ENDPOINTS from "../config/api";
 import "../index.css"; // Import CSS file for animations
 
 const AudioRecorder = () => {
@@ -211,7 +212,7 @@ const AudioRecorder = () => {
     formData.append("audio", file);
 
     try {
-      const response = await fetch("http://localhost:5000/api/audio/upload", {
+      const response = await fetch(API_ENDPOINTS.AUDIO.UPLOAD, {
         method: "POST",
         body: formData,
       });

@@ -10,6 +10,7 @@ import {
 } from "react-icons/hi";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import API_ENDPOINTS from "../config/api";
 import useAuthStore from "../store/authStore";
 
 function CreateAccount() {
@@ -120,7 +121,7 @@ function CreateAccount() {
 
   // Google signup handler
   const handleGoogleSignup = () => {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    window.location.href = API_ENDPOINTS.AUTH.GOOGLE;
   };
 
   // On mount, check for token in URL (after Google OAuth)
@@ -130,7 +131,7 @@ function CreateAccount() {
     if (token) {
       localStorage.setItem("token", token);
       // Fetch full user profile from backend
-      fetch("http://localhost:5000/api/auth/me", {
+      fetch(API_ENDPOINTS.AUTH.ME, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

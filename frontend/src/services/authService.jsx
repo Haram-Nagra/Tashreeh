@@ -1,10 +1,10 @@
-const API_URL = "http://localhost:5000/api/auth";
+import API_ENDPOINTS from "../config/api";
 
 // Helper function for error handling
 const handleResponse = async (response) => {
   if (!response.ok) {
     const errorData = await response.json();
-    console.error("Error response data:", errorData); // Log the error data for better insight
+    console.error("Error response data:", errorData);
     throw new Error(errorData.message || "Something went wrong!");
   }
   return await response.json();
@@ -13,55 +13,52 @@ const handleResponse = async (response) => {
 // Register user
 export const register = async (email, password) => {
   try {
-    const response = await fetch(`${API_URL}/register`, {
+    const response = await fetch(API_ENDPOINTS.AUTH.REGISTER, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
 
     const data = await handleResponse(response);
-    
-    // Ensure the data contains both token and user information
+
     if (!data.token || !data.user) {
       throw new Error("Registration failed: Missing token or user data");
     }
 
     return {
       token: data.token,
-      user: data.user, // Assuming the backend returns { token, user }
+      user: data.user,
     };
   } catch (error) {
     console.error("Registration error:", error);
-    throw error; // Re-throw the error for higher-level handling
+    throw error;
   }
 };
 
 // Login user
 export const login = async (email, password) => {
   try {
-    const response = await fetch(`${API_URL}/login`, {
+    const response = await fetch(API_ENDPOINTS.AUTH.LOGIN, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
 
     const data = await handleResponse(response);
-    
-    // Ensure the data contains both token and user information
+
     if (!data.token || !data.user) {
       throw new Error("Login failed: Missing token or user data");
     }
 
     return {
       token: data.token,
-      user: data.user, // Assuming the backend returns { token, user }
+      user: data.user,
     };
   } catch (error) {
     console.error("Login error:", error);
-    throw error; // Re-throw the error for higher-level handling
+    throw error;
   }
 };
-
 
 // //authService.jsx
 

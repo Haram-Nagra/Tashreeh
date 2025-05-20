@@ -11,6 +11,7 @@ import {
   HiOutlineTranslate,
 } from "react-icons/hi";
 import { useLocation } from "react-router-dom";
+import API_ENDPOINTS from "../config/api";
 
 const SummarizationPage = () => {
   const location = useLocation();
@@ -44,14 +45,11 @@ const SummarizationPage = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/summarization",
-        {
-          text: inputText,
-          language: language,
-          length: length,
-        }
-      );
+      const response = await axios.post(API_ENDPOINTS.SUMMARIZATION.BASE, {
+        text: inputText,
+        language: language,
+        length: length,
+      });
       setSummary(response.data.summary);
       setShowPreview(true);
     } catch (error) {
